@@ -1,0 +1,12 @@
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `estadisticas_reservas`()
+BEGIN
+  SELECT 
+    COUNT(*) AS total_reservas,
+    SUM(importe_total) AS total_recaudado,
+    COUNT(DISTINCT usuario_id) AS clientes_unicos,
+    COUNT(DISTINCT salon_id) AS salones_usados
+  FROM reservas
+  WHERE activo = 1;
+END$$
+DELIMITER ;
