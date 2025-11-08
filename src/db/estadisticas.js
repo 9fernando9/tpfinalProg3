@@ -4,9 +4,9 @@ export default class Estadisticas {
     constructor() {
     }
 
-    buscarDatos = async (sqlSelect) => {
+    buscarDatosProcedure = async () => {
         const conexion = await DbUtils.initConnection();
-        const [rows] = await conexion.execute(sqlSelect, null);
+        const [rows] = await conexion.execute("CALL estadisticas_reservas();");
         conexion.end();
         return rows;
     }
