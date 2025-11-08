@@ -75,4 +75,15 @@ export default class Usuarios {
         conexion.end();
         return (rows.length > 0)? rows[0] : null;
     }
+
+     buscarCorreos = async(usuario_id)=>{
+        // Defino el string de consulta
+        const strSql = `SELECT nombre_usuario FROM usuarios WHERE usuario_id = ? OR tipo_usuario = 1 OR tipo_usuario = 2 AND activo = 1`;
+        const conexion = await DbUtils.initConnection();
+        // Ejecuto la consulta
+        const [rows] = await conexion.query(strSql, [usuario_id]);
+        conexion.end();
+        const correos = rows.map(r=>r.nombre_usuario);
+        return correos;
+    }
 }
