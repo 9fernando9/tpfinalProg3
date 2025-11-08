@@ -10,6 +10,7 @@ import reservasRutas from './v1/reservasRutas.js';
 import reportesRutas from './v1/reportesRutas.js';
 import encuestasRutas from './v1/encuestasRutas.js';
 import comentariosRutas from './v1/comentariosRutas.js';
+import estadisticasRutas from './v1/estadisticasRutas.js';
 import { rutaNoEncontrada } from '../middlewares/rutaNoEncontrada.js';
 const router = Router();
 
@@ -106,7 +107,9 @@ router.use('/reservas', reservasRutas);
 router.use('/reportes',[verificarToken, esAdmin], reportesRutas);
 router.use('/encuestas', encuestasRutas);
 router.use('/comentarios', comentariosRutas);
+router.use('/estadisticas',[verificarToken, esAdmin], estadisticasRutas);
 
 router.use(rutaNoEncontrada);
+
 
 export default router;
