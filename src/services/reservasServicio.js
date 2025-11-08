@@ -1,7 +1,8 @@
 import Reservas from '../db/reservas.js';
 import salones from "../db/salones.js";
 import servicios from '../db/servicios.js';
-import nodemailer from 'nodemailer';
+import EmailService from './enviarCorreo.js';
+import Usuarios from '../db/usuarios.js';
 
 
 export default class Reservasreserva {
@@ -78,29 +79,17 @@ export default class Reservasreserva {
             }
             this.reservas = new Reservas(null, reserva.fecha_reserva, reserva.salon_id, reserva.usuario_id, reserva.turno_id, reserva.foto_cumpleaniero, reserva.tematica, importe_salon, importe_total, null, null, null,lista_servicios);
             const row = this.reservas.create();
-            /*const transporte = nodemailer.createTransport({
-                service: 'gmail',
-                host: 'smtp.gmail.com',
-                port: 587,
-                secure: false,
-                auth:{
-                    user: process.env.EMAIL_USER,
-                    pass: process.env.EMAIL_PASS
-                },
-                tls:{
-                    rejectUnauthorized: false
-                }
-            });
-            const mensaje = {
-                from : process.env.EMAIL_USER,
-                to : 'lusfergomez101@gmail.com',
-                subject : 'Confirmación de Reserva',
-                text : `Su reserva para el salón ha sido confirmada. Detalles:\nFecha: ${reserva.fecha_reserva}\nImporte Total: $${importe_total.toFixed(2)}\n¡Gracias por elegirnos!`
+            const usuarios = new Usuarios();
+            const correos = await usuarios.buscarCorreos(reserva.usuario_id);
+            this.emailService = new EmailService();
+            for (const correo of correos) {
+                console.log("Correo a enviar:",correo);
+                await this.emailService.enviarCorreoReserva(
+                correo,
+                reserva.fecha_reserva,
+                importe_total
+            );
             }
-            await transporte.verify();
-
-            const info = await transporte.sendMail(mensaje);
-            */
             return row;
         }
     }
@@ -134,5 +123,6 @@ export default class Reservasreserva {
             return this.reservas.delete(reservaToUpdate);
         }
     }
+
 
 }
