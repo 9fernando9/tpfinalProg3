@@ -10,6 +10,8 @@ export const verificarToken = (req, res, next) => {
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.usuario = decoded;
+        req.tipoUsuario = decoded.rol;
+        req.idUsuario = decoded.id;
         next();
     } catch (err) {
         return res.status(401).json({ message: "Token inválido" });
@@ -52,7 +54,7 @@ export const verificarTokenEncuesta = (req, res, next) => {
 
 
 export const esAdmin = (req, res, next) => {
-    if (req.rol !== "admin") {
+    if (req.tipoUsuario !== "admin") {
         return res.status(403).json({ message: "Requiere rol de administrador" });
     }
     next();
@@ -77,4 +79,5 @@ export const esCliente = (req, res, next) => {
         return res.status(403).json({ message: "Requiere rol de cliente" });
     }
     next();
+
 };
